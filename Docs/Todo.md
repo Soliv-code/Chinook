@@ -1,5 +1,4 @@
-
-# 📋 Chinook Project TODO
+#  Chinook Project TODO
 
 Этот документ отражает текущий статус, историю и план развития проекта Chinook API (.NET 10, Clean Architecture, Dapper).
 
@@ -46,12 +45,12 @@ Chinook/
 │   └── Chinook API/
 │       ├── Artists/ (Create, Delete, GetAll, GetById, Update)
 │       └── Tests/
-├── Chinook.API/
+── Chinook.API/
 │   ├── Controllers/ (ArtistsController, PingController)
 │   ├── Properties/launchSettings.json
 │   ├── appsettings.json
 │   ├── Dockerfile
-│   ── Program.cs
+│   └── Program.cs
 ├── Chinook.Application/
 │   └── Interfaces/IArtistRepository.cs
 ├── Chinook.Domain/
@@ -64,12 +63,12 @@ Chinook/
 ├── Docs/
 │   ├── ProjectStructure.md
 │   └── Todo.md
-── Chinook.slnx
+└── Chinook.slnx
 ```
 
 ---
 
-## 🚧 Следующие шаги
+##  Следующие шаги
 
 ### Этап 2: Кэширование (Redis)
 - [ ] Добавить сервис `redis` в `docker-compose.yml`.
@@ -89,7 +88,6 @@ Chinook/
 - [ ] Написать сложный запрос с `JOIN` (например, получить Альбом со списком Треков в одном запросе через Dapper).
 - [ ] Добавить векторный поиск (`pgvector`): поиск треков по семантическому описанию.
 - [ ] Добавить фоновую обработку событий (RabbitMQ/Kafka): отправка email-чека при создании `Invoice`.
----
 
 ### 🧠 Этап 5: Мониторинг и Профилирование SQL (Идеи)
 - [ ] **Логирование запросов**: Настроить уровень логирования `"Npgsql": "Debug"` в `appsettings.json` для вывода чистого SQL в консоль (полная замена прозрачности EF Core).
@@ -99,7 +97,7 @@ Chinook/
 
 ---
 
-## 📝 Заметки и правила проекта
+##  Заметки и правила проекта
 1. **Источник истины**: Структура БД определяется только через `Docker/SQL/init.sql`. Любые изменения в DBeaver должны быть немедленно перенесены в этот файл.
 2. **Docker Workflow**: Для локальной разработки API запускается через Visual Studio (F5). Пересборка Docker-образа API (`docker-compose up -d --build`) делается только для финальной проверки.
 3. **База данных**: Никогда не использовать `docker-compose down -v` без крайней необходимости (это удаляет все данные).
