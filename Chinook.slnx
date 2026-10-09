@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Docs/">
+    <File Path="Docs/ProjectStructure_2026-10-09_12-40-26.md" />
+  </Folder>
   <Project Path="Chinook.API/Chinook.API.csproj" />
   <Project Path="Chinook.Application/Chinook.Application.csproj" />
   <Project Path="Chinook.Domain/Chinook.Domain.csproj" />
