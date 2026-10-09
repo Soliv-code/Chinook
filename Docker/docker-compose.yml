@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: chinook_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chinook
+    ports:
+      - "5432:5432"
+    volumes:
+      # Путь относительно этого docker-compose.yml (папка SQL рядом с ним)
+      - ./SQL:/docker-entrypoint-initdb.d
+      # Именованный том для сохранения данных БД
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      # Контекст сборки - корень решения (на уровень выше), 
+      # чтобы Docker видел все 4 проекта для сборки
+      context: ..
+      dockerfile: Chinook.API/Dockerfile
+    container_name: chinook_api
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=chinook;Username=postgres;Password=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

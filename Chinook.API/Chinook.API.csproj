@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Chinook.Application\Chinook.Application.csproj" />
     <ProjectReference Include="..\Chinook.Infrastructure\Chinook.Infrastructure.csproj" />
   </ItemGroup>
