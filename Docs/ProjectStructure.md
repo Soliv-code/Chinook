@@ -16,5 +16,8 @@ Chinook/
 ├── Chinook.Infrastructure
 │   └── Chinook.Infrastructure.csproj
 ├── Docs
+│   └── ProjectStructure.md
+├── .gitattributes
+├── .gitignore
 └── Chinook.slnx
 ```
