@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Chinook.API/Chinook.API.csproj" />
+  <Project Path="Chinook.Application/Chinook.Application.csproj" />
+  <Project Path="Chinook.Domain/Chinook.Domain.csproj" />
+  <Project Path="Chinook.Infrastructure/Chinook.Infrastructure.csproj" />
+</Solution>
