@@ -1,6 +1,12 @@
 <Solution>
+  <Folder Name="/Docker/">
+    <File Path="Docker/docker-compose.yml" />
+  </Folder>
+  <Folder Name="/Docker/SQL/">
+    <File Path="Docker/SQL/init.sql" />
+  </Folder>
   <Folder Name="/Docs/">
-    <File Path="Docs/ProjectStructure_2026-10-09_12-40-26.md" />
+    <File Path="Docs/ProjectStructure.md" />
   </Folder>
   <Project Path="Chinook.API/Chinook.API.csproj" />
   <Project Path="Chinook.Application/Chinook.Application.csproj" />
