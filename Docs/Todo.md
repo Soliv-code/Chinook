@@ -1,51 +1,81 @@
+
 # 📋 Chinook Project TODO
 
 Этот документ отражает текущий статус, историю и план развития проекта Chinook API (.NET 10, Clean Architecture, Dapper).
 
 ## ✅ Выполнено (Готово)
 
-### ️ Архитектура и Инфраструктура
+### 🏗️ Архитектура и Инфраструктура
 - [x] **Инициализация решения**: Создан Solution `Chinook` в Visual Studio 2026 (.NET 10).
 - [x] **Архитектура**: Реализована Clean Architecture из 4-х проектов:
-  - `Chinook.Domain` (без зависимостей)
-  - `Chinook.Application` (ссылается на Domain)
-  - `Chinook.Infrastructure` (ссылается на Domain и Application)
-  - `Chinook.API` (ссылается на Application и Infrastructure, Controller-based)
-- [x] **Git**: Репозиторий инициализирован, ветка по умолчанию изменена на `main`.
+  - `Chinook.Domain` (только сущности)
+  - `Chinook.Application` (интерфейсы и контракты)
+  - `Chinook.Infrastructure` (реализации, Dapper, Npgsql)
+  - `Chinook.API` (контроллеры, DI, Program.cs)
+- [x] **Git**: Репозиторий инициализирован, ветка по умолчанию — `main`. Ветка `feature/artist-repository` успешно слита.
 - [x] **Инфраструктура (Docker)**:
   - Настроен `Docker/docker-compose.yml`.
   - Поднят PostgreSQL 17 с расширением `pgvector` (`pgvector/pgvector:pg17`).
-  - Настроен современный `init.sql` с `GENERATED ALWAYS AS IDENTITY` (без legacy-последовательностей).
+  - Настроен современный `init.sql` с `GENERATED ALWAYS AS IDENTITY`.
   - Настроен `Dockerfile` для multi-stage сборки API.
 
-### ️ Инструменты и Исследование
+### 🛠️ Инструменты и Исследование
 - [x] **Инструменты разработки**:
   - DBeaver: подключен к локальной БД, схема проверена.
-  - Bruno: коллекция API создана внутри папки проекта, успешный пинг тестового эндпоинта.
+  - Bruno: коллекция API (`BrunoCollection`) создана внутри проекта, все CRUD-операции протестированы.
 - [x] **SQL-исследование (DBeaver)**:
   - Изучена бизнес-логика схемы Chinook (цифровой магазин музыки).
   - Освоены преобразования типов, работа с `NULL` (`COALESCE`, `CASE WHEN`) и форматирование времени.
-- [x] **Domain**: Определена первая сущность `Artist` и интерфейс `IArtistRepository`.
+  - Освоены Raw String Literals (`"""`) для чистого SQL в C#.
 
-### 🌿 Git Workflow
-- [x] Создана feature-ветка `feature/artist-repository` для разработки первого CRUD.
+### 🎯 Этап 1: Базовый CRUD на Dapper (Завершён)
+- [x] Добавлены NuGet-пакеты в `Chinook.Infrastructure`: `Dapper` и `Npgsql`.
+- [x] Реализован `ArtistRepository` (используя `NpgsqlDataSource`, параметризованные запросы, `RETURNING`).
+- [x] Настроена регистрация зависимостей (DI) в `Program.cs`.
+- [x] Создан `ArtistsController` с полным набором REST-эндпоинтов (GET, POST, PUT, DELETE).
+- [x] Реализована безопасная серверная сортировка через query-параметры (`?sortBy=name`).
+- [x] Протестированы все сценарии в Bruno (включая обработку 404 и 204 статусов).
 
 ---
 
-## 🚧 В работе / Следующие шаги
+## 📁 Структура проекта
 
-### Этап 1: Базовый CRUD на Dapper (Текущий фокус)
-- [x] Добавить NuGet-пакеты в `Chinook.Infrastructure`: `Dapper` и `Npgsql`.
-- [x] Реализовать `ArtistRepository` в `Infrastructure` (используя `NpgsqlDataSource` и Dapper).
-- [ ] Настроить регистрацию зависимостей (DI) в `Program.cs`.
-- [ ] Создать `ArtistsController` в `Chinook.API`.
-- [ ] Протестировать эндпоинты `GET /api/artists` и `GET /api/artists/{id}` через Bruno.
+```text
+Chinook/
+├── BrunoCollection/
+│   └── Chinook API/
+│       ├── Artists/ (Create, Delete, GetAll, GetById, Update)
+│       └── Tests/
+├── Chinook.API/
+│   ├── Controllers/ (ArtistsController, PingController)
+│   ├── Properties/launchSettings.json
+│   ├── appsettings.json
+│   ├── Dockerfile
+│   ── Program.cs
+├── Chinook.Application/
+│   └── Interfaces/IArtistRepository.cs
+├── Chinook.Domain/
+│   └── Entities/Artist.cs
+├── Chinook.Infrastructure/
+│   └── Repositories/ArtistRepository.cs
+├── Docker/
+│   ├── SQL/init.sql
+│   └── docker-compose.yml
+├── Docs/
+│   ├── ProjectStructure.md
+│   └── Todo.md
+── Chinook.slnx
+```
+
+---
+
+## 🚧 Следующие шаги
 
 ### Этап 2: Кэширование (Redis)
 - [ ] Добавить сервис `redis` в `docker-compose.yml`.
 - [ ] Добавить NuGet-пакет `StackExchange.Redis` в `Infrastructure`.
-- [ ] Создать интерфейс `ICacheService` в `Domain` и его реализацию `RedisCacheService` в `Infrastructure`.
-- [ ] Реализовать паттерн Cache-Aside в `Application` (например, для запроса списка артистов).
+- [ ] Создать интерфейс `ICacheService` в `Application` и реализацию `RedisCacheService` в `Infrastructure`.
+- [ ] Реализовать паттерн Cache-Aside (например, для `GetAllArtists`).
 - [ ] Протестировать в Bruno (первый запрос медленный, второй мгновенный).
 
 ### Этап 3: Авторизация и безопасность (Keycloak)
@@ -54,15 +84,22 @@
 - [ ] Добавить роли (например, `Customer` и `Employee`).
 - [ ] Закрыть эндпоинты атрибутом `[Authorize]` и настроить политику доступа.
 
-### Этап 4: Продвинутые фичи (Опционально / На будущее)
-- [ ] Реализовать более сложные запросы Dapper (например, `Album` с вложенным списком `Track` через `QueryMultiple` или маппинг).
-- [ ] Добавить векторный поиск (`pgvector`): поиск треков или плейлистов по семантическому описанию.
-- [ ] Добавить фоновую обработку событий (RabbitMQ/Kafka): отправка email-чека при создании новой `Invoice`.
+### Этап 4: Продвинутые фичи и связи
+- [ ] Реализовать CRUD для `Album` и `Track`.
+- [ ] Написать сложный запрос с `JOIN` (например, получить Альбом со списком Треков в одном запросе через Dapper).
+- [ ] Добавить векторный поиск (`pgvector`): поиск треков по семантическому описанию.
+- [ ] Добавить фоновую обработку событий (RabbitMQ/Kafka): отправка email-чека при создании `Invoice`.
 
 ---
 
-##  Заметки и правила проекта
+## 📝 Заметки и правила проекта
 1. **Источник истины**: Структура БД определяется только через `Docker/SQL/init.sql`. Любые изменения в DBeaver должны быть немедленно перенесены в этот файл.
-2. **Docker Workflow**: Для локальной разработки API запускается через Visual Studio (F5). Пересборка Docker-образа API (`docker-compose up -d --build`) делается только для финальной проверки или деплоя.
+2. **Docker Workflow**: Для локальной разработки API запускается через Visual Studio (F5). Пересборка Docker-образа API (`docker-compose up -d --build`) делается только для финальной проверки.
 3. **База данных**: Никогда не использовать `docker-compose down -v` без крайней необходимости (это удаляет все данные).
-4. **Dapper & Postgres**: Используем `NpgsqlDataSource` для пула соединений. В SQL-запросах используем явные алиасы (`AS ArtistId`) для предсказуемого маппинга.
+4. **Dapper & Postgres**: 
+   - Используем `NpgsqlDataSource` для пула соединений.
+   - В SQL-запросах используем явные алиасы (`AS ArtistId`) и Raw String Literals (`"""`).
+   - Параметры передаются только через `@Parameter` (защита от SQL-инъекций).
+5. **REST API**: 
+   - Пустой список возвращает `200 OK` с `[]`, а не `404`.
+   - ID ресурса берётся из URL, в теле запроса (PUT/POST) передаются только данные.
