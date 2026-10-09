@@ -1,0 +1,17 @@
+meta {
+  name: GetAllArtists
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://localhost:7090/api/artists
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}
