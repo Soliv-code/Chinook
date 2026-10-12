@@ -1,12 +1,13 @@
 ﻿using Chinook.Application.Interfaces;
-using Chinook.Domain.Chinook.Domain.Entities;
+using Chinook.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chinook.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ArtistsController(IArtistRepository _artistRepository) : ControllerBase
+public class ArtistsController(
+    IArtistRepository _artistRepository) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] string sortBy = "artist_id", CancellationToken cancellationToken = default)
@@ -54,13 +55,22 @@ public class ArtistsController(IArtistRepository _artistRepository) : Controller
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        var isDeleted = await _artistRepository.DeleteAsync(id, cancellationToken);
-        if (!isDeleted)
+        try
         {
-            return NotFound(new { message = $"Исполнитель с ID {id} не найден для удаления." });
-        }
+            var isDeleted = await _artistRepository.DeleteAsync(id, cancellationToken);
 
-        return NoContent(); // 204 No Content
+            if (!isDeleted)
+            {
+                return NotFound(new { message = $"Исполнитель с ID {id} не найден." });
+            }
+
+            return NoContent(); // 204 No Content
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Возвращаем чистый 400 Bad Request с понятным сообщением
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
 }

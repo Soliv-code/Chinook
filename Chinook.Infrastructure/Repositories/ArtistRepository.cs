@@ -1,12 +1,15 @@
 ﻿using Chinook.Application.Interfaces;
-using Chinook.Domain.Chinook.Domain.Entities;
+using Chinook.Domain.Entities;
 using Dapper;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace Chinook.Infrastructure.Repositories;
 
 // DI сам подставит сюда наш Singleton DataSource из Program.cs
-public class ArtistRepository(NpgsqlDataSource _dataSource) : IArtistRepository
+public class ArtistRepository(
+    NpgsqlDataSource _dataSource, 
+    ILogger<AlbumRepository> _logger) : IArtistRepository
 {
 
     //private readonly NpgsqlDataSource _dataSource = dataSource;
@@ -86,7 +89,17 @@ public class ArtistRepository(NpgsqlDataSource _dataSource) : IArtistRepository
             WHERE artist_id = @Id
             """;
 
-        var rowsAffected = await connection.ExecuteAsync(sql, new { Id = id });
-        return rowsAffected > 0;
+        try
+        {
+            var rowsAffected = await connection.ExecuteAsync(sql, new { Id = id });
+            return rowsAffected > 0;
+        }
+        catch (PostgresException ex) when (ex.SqlState == "23503") // foreign_key_violation
+        {
+            // Логируем попытку нарушения целостности
+            _logger.LogWarning("Попытка удалить исполнителя с привязанными альбомами. ArtistId: {ArtistId}", id);
+
+            throw new InvalidOperationException($"Невозможно удалить исполнителя с ID {id}: у него есть привязанные альбомы.");
+        }
     }
 }

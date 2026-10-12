@@ -27,6 +27,10 @@ builder.Services.AddSingleton<NpgsqlDataSource>(sp =>
 
 // Регистрируем наш репозиторий (Scoped - создается на каждый HTTP-запрос)
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+
+// Регистрируем репозиторий Albums (Scoped - создаётся на каждый HTTP-запрос)
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

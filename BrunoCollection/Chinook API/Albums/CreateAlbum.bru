@@ -1,0 +1,37 @@
+meta {
+  name: CreateAlbum
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://localhost:7090/api/albums
+  body: json
+  auth: inherit
+}
+
+body:json {
+  /*
+  Тест на левого исполнителя:
+  {
+    "Title": "Тестовый_заголовок_альбома_999",
+    "ArtistId": 999
+  }
+  ---
+  Должен вывести:
+  {
+    "message": "Не удалось создать альбом: исполнитель с ID 999 не существует."
+  }
+  */
+  {
+    "Title": "Тестовый_заголовок_альбома",
+    "ArtistId": 1
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

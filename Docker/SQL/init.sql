@@ -164,6 +164,10 @@ ALTER TABLE album ADD CONSTRAINT album_artist_id_fkey
 
 CREATE INDEX album_artist_id_idx ON album (artist_id);
 
+-- Добавляем составное уникальное ограничение
+ALTER TABLE album 
+ADD CONSTRAINT uq_album_title_artist UNIQUE (title, artist_id);
+
 ALTER TABLE customer ADD CONSTRAINT customer_support_rep_id_fkey
     FOREIGN KEY (support_rep_id) REFERENCES employee (employee_id) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -213,6 +217,7 @@ ALTER TABLE track ADD CONSTRAINT track_media_type_id_fkey
     FOREIGN KEY (media_type_id) REFERENCES media_type (media_type_id) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 CREATE INDEX track_media_type_id_idx ON track (media_type_id);
+
 
 
 /*******************************************************************************

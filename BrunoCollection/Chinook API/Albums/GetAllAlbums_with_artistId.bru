@@ -1,0 +1,17 @@
+meta {
+  name: GetAllAlbums_with_artistId
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://localhost:7090/api/albums
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

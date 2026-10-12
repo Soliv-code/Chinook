@@ -5,12 +5,13 @@ meta {
 }
 
 get {
-  url: https://localhost:7090/api/artists/1
+  url: https://localhost:7090/api/artists/999
   body: none
   auth: inherit
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
   forwardAuthorizationHeader: false
 }

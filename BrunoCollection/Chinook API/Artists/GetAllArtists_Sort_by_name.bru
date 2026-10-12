@@ -1,0 +1,21 @@
+meta {
+  name: GetAllArtists_Sort_by_name
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://localhost:7090/api/artists?sortBy=name
+  body: none
+  auth: inherit
+}
+
+params:query {
+  sortBy: name
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

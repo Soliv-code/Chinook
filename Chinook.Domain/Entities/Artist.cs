@@ -1,4 +1,4 @@
-﻿namespace Chinook.Domain.Chinook.Domain.Entities;
+﻿namespace Chinook.Domain.Entities;
 
 public record Artist(
     int ArtistId,
