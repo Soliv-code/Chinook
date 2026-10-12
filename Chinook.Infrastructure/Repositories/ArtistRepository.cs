@@ -11,8 +11,6 @@ public class ArtistRepository(
     NpgsqlDataSource _dataSource, 
     ILogger<AlbumRepository> _logger) : IArtistRepository
 {
-
-    //private readonly NpgsqlDataSource _dataSource = dataSource;
     public async Task<IEnumerable<Artist>> GetAllAsync(string sortBy = "artist_id", CancellationToken cancellationToken = default)
     {
         await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
